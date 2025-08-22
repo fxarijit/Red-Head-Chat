@@ -25,7 +25,17 @@
         </section>
 
         <section id="admin-dashboard-section" style="display: none;">
+            <!-- NEW USER CREATION AREA -->
             <div id="admin-users-list-area">
+                <div id="admin-create-user-area">
+                    <h2>Create New Public User</h2>
+                    <input type="text" id="new-username-input" placeholder="New Username" required>
+                    <input type="password" id="new-password-input" placeholder="New Password" required>
+                    <button id="create-user-button">Create User</button>
+                    <p id="create-user-message" class="error-message"></p>
+                </div>
+                <hr style="margin: 20px 0; border-color: var(--admin-border-color);"> <!-- Separator -->
+
                 <h2>Public Users</h2>
                 <ul id="public-users-list">
                     <!-- Public users will be listed here -->
