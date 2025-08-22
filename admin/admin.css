@@ -1,0 +1,252 @@
+:root {
+    --admin-primary-color: #007bff; /* Blue */
+    --admin-accent-color: #28a745; /* Green */
+    --admin-background-color: #e9ecef;
+    --admin-text-color: #343a40;
+    --admin-border-color: #ced4da;
+    --admin-chat-bubble-bg-self: #e2f0ff; /* Light Blue */
+    --admin-chat-bubble-bg-other: #f8f9fa; /* Light Gray */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--admin-background-color);
+    color: var(--admin-text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#admin-app-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 900px; /* Wider for admin */
+    margin: 0 auto;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    background-color: #fff;
+    flex-grow: 1;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#admin-header {
+    background-color: var(--admin-primary-color);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#admin-header h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+#admin-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+}
+
+button {
+    background-color: var(--admin-accent-color);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--admin-border-color);
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+h2 {
+    color: var(--admin-primary-color);
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.error-message {
+    color: #dc3545; /* Red */
+    margin-top: -5px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+/* Admin Login Section */
+#admin-login-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+    flex-grow: 1;
+}
+#admin-login-section > input, #admin-login-section > button {
+    max-width: 300px;
+}
+
+/* Admin Dashboard Section */
+#admin-dashboard-section {
+    display: flex; /* Flex container for users list and chat area */
+    flex-direction: column; /* Stacks on mobile */
+    flex-grow: 1;
+}
+
+#admin-users-list-area {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-bottom: 1px solid var(--admin-border-color); /* Separator for mobile */
+}
+
+#public-users-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#public-users-list li {
+    padding: 10px;
+    border-bottom: 1px solid var(--admin-border-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#public-users-list li:hover {
+    background-color: #e2f0ff;
+}
+
+#public-users-list li.selected {
+    background-color: var(--admin-primary-color);
+    color: white;
+}
+
+#admin-chat-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+#admin-message-display {
+    flex-grow: 1;
+    overflow-y: auto;
+    border: 1px solid var(--admin-border-color);
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-message-bubble {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 18px;
+    margin-bottom: 8px;
+    word-wrap: break-word;
+    font-size: 0.95em;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+}
+
+.admin-message-self {
+    align-self: flex-end;
+    background-color: var(--admin-chat-bubble-bg-self);
+    color: var(--admin-text-color);
+    border-bottom-right-radius: 2px;
+}
+
+.admin-message-other {
+    align-self: flex-start;
+    background-color: var(--admin-chat-bubble-bg-other);
+    color: var(--admin-text-color);
+    border-bottom-left-radius: 2px;
+}
+
+.admin-message-sender {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.admin-message-timestamp {
+    font-size: 0.7em;
+    color: #888;
+    text-align: right;
+    margin-top: 5px;
+    display: block;
+}
+
+#admin-message-input-area {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--admin-border-color);
+}
+
+#admin-message-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid var(--admin-border-color);
+    border-radius: 20px;
+    font-size: 1em;
+}
+
+#admin-send-button {
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+
+/* --- Responsive Adjustments (for larger screens like PC) --- */
+@media (min-width: 768px) {
+    body {
+        justify-content: center;
+        align-items: center;
+    }
+    #admin-app-container {
+        height: 90vh; /* Fill most of the height on PC */
+    }
+    #admin-dashboard-section {
+        flex-direction: row; /* Side-by-side on larger screens */
+    }
+    #admin-users-list-area {
+        width: 300px; /* Fixed width for user list */
+        border-right: 1px solid var(--admin-border-color); /* Vertical separator */
+        border-bottom: none; /* No horizontal separator on wide screens */
+        flex-shrink: 0; /* Don't shrink the user list */
+    }
+    #admin-chat-area {
+        flex-grow: 1; /* Chat area takes remaining space */
+    }
+}
