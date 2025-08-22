@@ -32,6 +32,13 @@ const adminMessageDisplay = document.getElementById('admin-message-display');
 const adminMessageInput = document.getElementById('admin-message-input');
 const adminSendButton = document.getElementById('admin-send-button');
 
+// NEW DOM Elements for User Creation
+const newUsernameInput = document.getElementById('new-username-input');
+const newPasswordInput = document.getElementById('new-password-input');
+const createUserButton = document.getElementById('create-user-button');
+const createUserMessage = document.getElementById('create-user-message');
+
+
 let adminCurrentUser = null;
 let adminUserName = '';
 let selectedPublicUserUid = null;
@@ -153,6 +160,66 @@ function listPublicUsers() {
     });
 }
 
+// --- Admin Dashboard: Create Public User ---
+async function createPublicUser() {
+    const username = newUsernameInput.value.trim();
+    const password = newPasswordInput.value.trim();
+
+    if (!username || !password) {
+        createUserMessage.textContent = "Username and password are required.";
+        createUserMessage.style.color = '#dc3545'; // Red for error
+        return;
+    }
+    if (password.length < 6) {
+        createUserMessage.textContent = "Password must be at least 6 characters long.";
+        createUserMessage.style.color = '#dc3545';
+        return;
+    }
+
+    createUserButton.disabled = true;
+    createUserMessage.textContent = 'Creating user...';
+    createUserMessage.style.color = '#007bff'; // Blue for info
+
+    try {
+        // --- THIS IS WHERE YOU WILL CALL YOUR CLOUD FUNCTION ---
+        // For now, this is a simulated call.
+        // Once your Cloud Function is deployed, you will replace this with:
+        // const response = await fetch('YOUR_CLOUD_FUNCTION_URL', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${await adminCurrentUser.getIdToken()}` // Send admin's token
+        //     },
+        //     body: JSON.stringify({ username, password })
+        // });
+        // const data = await response.json();
+        // if (data.error) {
+        //     throw new Error(data.error);
+        // }
+        // console.log("User creation response:", data);
+
+
+        // SIMULATED SUCCESS - REMOVE THESE LINES AFTER CLOUD FUNCTION IS READY
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate network delay
+        // END SIMULATED SUCCESS
+
+        createUserMessage.textContent = `User "${username}" created successfully!`;
+        createUserMessage.style.color = '#28a745'; // Green for success
+        newUsernameInput.value = '';
+        newPasswordInput.value = '';
+        
+        listPublicUsers(); // Refresh the list of public users
+        
+    } catch (error) {
+        console.error("Error creating user:", error.message);
+        createUserMessage.textContent = `Error: ${error.message}`;
+        createUserMessage.style.color = '#dc3545';
+    } finally {
+        createUserButton.disabled = false;
+    }
+}
+
+
 // --- Admin Dashboard: Chatting with Selected User ---
 let unsubscribeChat = null;
 
@@ -259,6 +326,9 @@ adminMessageInput.addEventListener('keypress', (e) => {
         sendAdminMessage();
     }
 });
+// NEW Event Listener for User Creation
+createUserButton.addEventListener('click', createPublicUser);
+
 
 // --- Initial Auth State Check for Admin ---
 auth.onAuthStateChanged(async (user) => {
@@ -283,4 +353,4 @@ auth.onAuthStateChanged(async (user) => {
         console.log("No admin user logged in.");
         showAdminLoginSection();
     }
-});
+});```
