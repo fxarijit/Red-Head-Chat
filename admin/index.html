@@ -30,15 +30,7 @@
 
         <section id="admin-dashboard-section" style="display: none;">
             <div id="admin-users-list-area">
-                <div id="admin-create-user-area">
-                    <h2>Create New Public User</h2>
-                    <input type="text" id="new-username-input" placeholder="New Username" required>
-                    <input type="password" id="new-password-input" placeholder="New Password" required>
-                    <button id="create-user-button" class="primary-button">Create User</button>
-                    <p id="create-user-message" class="error-message"></p>
-                </div>
-                <hr class="separator">
-
+                <!-- REMOVED: Create New Public User Section -->
                 <h2>Public Users</h2>
                 <div class="search-container">
                     <input type="text" id="user-search-input" placeholder="Search users by name or chat..." aria-label="Search users">
@@ -47,6 +39,7 @@
                     <!-- Public users will be listed here -->
                     <li>No public users found.</li>
                 </ul>
+                <p class="info-message">To create new users, please use the Firebase Console directly.</p>
             </div>
 
             <div id="admin-chat-area">
@@ -72,7 +65,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script> <!-- Optional -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script> <!-- NEW: For media sharing -->
     
     <script src="admin.js" type="module"></script> <!-- Link to admin-specific JS -->
