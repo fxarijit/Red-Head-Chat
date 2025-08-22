@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Chat App</title>
-    <link rel="stylesheet" href="admin.css"> <!-- Link to admin-specific CSS -->
+    <title>NexChat - Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- Google Fonts for a modern look (optional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="admin-app-container">
@@ -12,31 +14,35 @@
             <h1>Admin Dashboard</h1>
             <div id="admin-user-info">
                 Logged in as: <span id="admin-username-display"></span>
-                <button id="admin-logout-button">Logout</button>
+                <button id="admin-logout-button" class="secondary-button">Logout</button>
             </div>
         </header>
 
         <section id="admin-login-section">
-            <h2>Admin Login</h2>
-            <input type="text" id="admin-email-input" placeholder="Admin Email" required>
-            <input type="password" id="admin-password-input" placeholder="Password" required>
-            <button id="admin-login-button">Login</button>
-            <p id="admin-login-error" class="error-message"></p>
+            <div class="auth-card">
+                <h2>Admin Login</h2>
+                <input type="text" id="admin-email-input" placeholder="Admin Email" required>
+                <input type="password" id="admin-password-input" placeholder="Password" required>
+                <button id="admin-login-button" class="primary-button">Login</button>
+                <p id="admin-login-error" class="error-message"></p>
+            </div>
         </section>
 
         <section id="admin-dashboard-section" style="display: none;">
-            <!-- NEW USER CREATION AREA -->
             <div id="admin-users-list-area">
                 <div id="admin-create-user-area">
                     <h2>Create New Public User</h2>
                     <input type="text" id="new-username-input" placeholder="New Username" required>
                     <input type="password" id="new-password-input" placeholder="New Password" required>
-                    <button id="create-user-button">Create User</button>
+                    <button id="create-user-button" class="primary-button">Create User</button>
                     <p id="create-user-message" class="error-message"></p>
                 </div>
-                <hr style="margin: 20px 0; border-color: var(--admin-border-color);"> <!-- Separator -->
+                <hr class="separator">
 
                 <h2>Public Users</h2>
+                <div class="search-container">
+                    <input type="text" id="user-search-input" placeholder="Search users by name or chat..." aria-label="Search users">
+                </div>
                 <ul id="public-users-list">
                     <!-- Public users will be listed here -->
                     <li>No public users found.</li>
@@ -47,10 +53,15 @@
                 <h2>Chat with: <span id="current-chatted-username">None Selected</span></h2>
                 <div id="admin-message-display">
                     <!-- Messages for the selected user will appear here -->
+                    <div class="chat-empty-state">
+                        <p>Select a user to start chatting.</p>
+                    </div>
                 </div>
                 <div id="admin-message-input-area">
+                    <input type="file" id="admin-media-input" accept="image/*,video/*,audio/*" style="display: none;">
+                    <label for="admin-media-input" class="media-upload-button primary-button">📎</label>
                     <input type="text" id="admin-message-input" placeholder="Type message to user...">
-                    <button id="admin-send-button" disabled>Send</button>
+                    <button id="admin-send-button" class="primary-button" disabled>Send</button>
                 </div>
             </div>
         </section>
@@ -58,8 +69,12 @@
 
     <!-- Firebase SDK CDN imports (use compat for older API style) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script> <!-- Optional -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script> <!-- NEW: For media sharing -->
+    
     <script src="admin.js" type="module"></script> <!-- Link to admin-specific JS -->
 </body>
 </html>
