@@ -5,7 +5,7 @@ const firebaseConfig = {
   authDomain: "red-head-7391.firebaseapp.com",
   databaseURL: "https://red-head-7391-default-rtdb.firebaseio.com",
   projectId: "red-head-7391",
-  storageBucket: "red-head-7391.firebasestorage.app", // NEW: For Firebase Storage
+  storageBucket: "red-head-7391.firebasestorage.app", // For Firebase Storage
   messagingSenderId: "408168002586",
   appId: "1:408168002586:web:f9920d13106cbe375b8da3",
   measurementId: "G-N6QX49H4KN" // Optional
@@ -17,8 +17,7 @@ const app = firebase.initializeApp(firebaseConfig);
 // Get service instances
 const auth = firebase.auth();
 const database = firebase.database();
-const functions = firebase.functions(); // For Firebase Cloud Functions
-const storage = firebase.storage(); // NEW: For Firebase Storage
+const storage = firebase.storage(); // For Firebase Storage
 
 // --- DOM Elements ---
 const adminLoginSection = document.getElementById('admin-login-section');
@@ -30,18 +29,14 @@ const adminLoginError = document.getElementById('admin-login-error');
 const adminUsernameDisplay = document.getElementById('admin-username-display');
 const adminLogoutButton = document.getElementById('admin-logout-button');
 const publicUsersList = document.getElementById('public-users-list');
-const userSearchInput = document.getElementById('user-search-input'); // NEW: Search input
+const userSearchInput = document.getElementById('user-search-input'); // Search input
 const currentChattedUsername = document.getElementById('current-chatted-username');
-const adminMessageDisplay = document.getElementById('admin-message-display');
+const adminMessageDisplay = document = document.getElementById('admin-message-display'); // DOM Element for displaying messages
 const adminMessageInput = document.getElementById('admin-message-input');
 const adminSendButton = document.getElementById('admin-send-button');
-const adminMediaInput = document.getElementById('admin-media-input'); // NEW: Admin media input
+const adminMediaInput = document.getElementById('admin-media-input'); // Admin media input
 
-// User Creation DOM Elements
-const newUsernameInput = document.getElementById('new-username-input');
-const newPasswordInput = document.getElementById('new-password-input');
-const createUserButton = document.getElementById('create-user-button');
-const createUserMessage = document.getElementById('create-user-message');
+// REMOVED: User Creation DOM Elements (newUsernameInput, newPasswordInput, createUserButton, createUserMessage)
 
 
 let adminCurrentUser = null;
@@ -239,57 +234,7 @@ function filterUsers() {
 }
 
 
-// --- Admin Dashboard: Create Public User ---
-async function createPublicUser() {
-    const username = newUsernameInput.value.trim();
-    const password = newPasswordInput.value.trim();
-
-    if (!username || !password) {
-        createUserMessage.textContent = "Username and password are required.";
-        createUserMessage.style.color = 'var(--error-color)';
-        return;
-    }
-    if (password.length < 6) {
-        createUserMessage.textContent = "Password must be at least 6 characters long.";
-        createUserMessage.style.color = 'var(--error-color)';
-        return;
-    }
-
-    createUserButton.disabled = true;
-    createUserMessage.textContent = 'Creating user...';
-    createUserMessage.style.color = 'gray';
-
-    try {
-        // Call the Firebase Cloud Function
-        const createPublicUserCallable = functions.httpsCallable('createPublicUser');
-        const result = await createPublicUserCallable({ username, password });
-        console.log("Cloud Function response:", result.data);
-
-        if (result.data.status !== 'success') {
-            throw new Error(result.data.message || 'Unknown error from Cloud Function.');
-        }
-
-        createUserMessage.textContent = `User "${username}" created successfully!`;
-        createUserMessage.style.color = 'var(--primary-color)';
-        newUsernameInput.value = '';
-        newPasswordInput.value = '';
-        
-        // listPublicUsers() is already listening to RTDB, will update automatically
-        
-    } catch (error) {
-        console.error("Error creating user:", error.message, "Code:", error.code, "Details:", error.details);
-        let displayErrorMessage = error.message;
-        if (error.code === 'functions/already-exists') {
-            displayErrorMessage = 'A user with that username already exists. Please choose a different one.';
-        } else if (error.details) {
-            displayErrorMessage = error.details; // Cloud function might send specific details
-        }
-        createUserMessage.textContent = `Error: ${displayErrorMessage}`;
-        createUserMessage.style.color = 'var(--error-color)';
-    } finally {
-        createUserButton.disabled = false;
-    }
-}
+// REMOVED: createPublicUser function and its DOM elements as Cloud Functions are not used.
 
 
 // --- Admin Dashboard: Chatting with Selected User ---
@@ -315,7 +260,7 @@ function selectUserToChat(uid, username) {
     adminMessageDisplay.innerHTML = '<div class="chat-empty-state"><p>No messages yet with this user.</p></div>'; // Clear previous chat
     adminMessageInput.value = '';
     adminMediaInput.value = ''; // Clear any pending media file
-    createUserMessage.textContent = ''; // Clear any pending creation message
+    // createUserMessage.textContent = ''; // Removed as createUserMessage is gone
 
     // Generate the chat ID consistently
     currentAdminChatId = generateChatId(adminCurrentUser.uid, selectedPublicUserUid);
@@ -390,8 +335,9 @@ async function sendAdminMessage() {
 
     adminSendButton.disabled = true;
     adminMediaInput.disabled = true; // Disable media input during send
-    createUserMessage.textContent = ''; // Clear any existing message
-    createUserMessage.style.color = 'gray'; // Reset color
+    // Use adminLoginError for temporary feedback about media upload
+    adminLoginError.textContent = ''; // Clear existing error/feedback
+    adminLoginError.style.color = 'gray'; // Reset color for feedback
 
     try {
         let messageData = {
@@ -404,7 +350,7 @@ async function sendAdminMessage() {
         }
 
         if (mediaFile) {
-            createUserMessage.textContent = 'Uploading media...';
+            adminLoginError.textContent = 'Uploading media...';
             const mediaPath = `chat_media/${currentAdminChatId}/${adminCurrentUser.uid}/${Date.now()}_${mediaFile.name}`;
             const mediaRef = storage.ref(mediaPath);
             const uploadTask = mediaRef.put(mediaFile);
@@ -412,7 +358,7 @@ async function sendAdminMessage() {
             uploadTask.on('state_changed',
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    createUserMessage.textContent = `Upload: ${progress.toFixed(0)}%`;
+                    adminLoginError.textContent = `Upload: ${progress.toFixed(0)}%`;
                 },
                 (error) => {
                     console.error("Admin media upload error:", error);
@@ -432,13 +378,13 @@ async function sendAdminMessage() {
 
         adminMessageInput.value = ''; // Clear text input
         adminMediaInput.value = ''; // Clear file input
-        createUserMessage.textContent = ''; // Clear media upload message
+        adminLoginError.textContent = ''; // Clear media upload message
 
         console.log("Admin message sent!");
     } catch (error) {
         console.error("Error sending admin message:", error.message);
-        createUserMessage.textContent = `Error sending: ${error.message}`;
-        createUserMessage.style.color = 'var(--error-color)';
+        adminLoginError.textContent = `Error sending: ${error.message}`;
+        adminLoginError.style.color = 'var(--error-color)';
     } finally {
         adminSendButton.disabled = false;
         adminMediaInput.disabled = false;
@@ -449,8 +395,8 @@ async function sendAdminMessage() {
 // --- Event Listeners ---
 adminLoginButton.addEventListener('click', adminLogin);
 adminLogoutButton.addEventListener('click', adminLogout);
-createUserButton.addEventListener('click', createPublicUser);
-userSearchInput.addEventListener('keyup', filterUsers); // NEW: Search input listener
+// REMOVED: createUserButton.addEventListener('click', createPublicUser);
+userSearchInput.addEventListener('keyup', filterUsers); // Search input listener
 adminSendButton.addEventListener('click', sendAdminMessage);
 adminMessageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
@@ -460,10 +406,10 @@ adminMessageInput.addEventListener('keypress', (e) => {
 adminMediaInput.addEventListener('change', () => {
     if (adminMediaInput.files[0]) {
         console.log("Admin media selected:", adminMediaInput.files[0].name, adminMediaInput.files[0].type);
-        createUserMessage.textContent = `File selected: ${adminMediaInput.files[0].name}`;
-        createUserMessage.style.color = 'gray';
+        adminLoginError.textContent = `File selected: ${adminMediaInput.files[0].name}`;
+        adminLoginError.style.color = 'gray';
     } else {
-        createUserMessage.textContent = '';
+        adminLoginError.textContent = '';
     }
 });
 
