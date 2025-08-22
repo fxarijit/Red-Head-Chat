@@ -3,491 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
-    <!-- Basic mobile-first styling -->
-    <style>
-        :root {
-            --primary-color: #4CAF50; /* Green */
-            --accent-color: #2196F3; /* Blue */
-            --background-color: #f0f2f5;
-            --text-color: #333;
-            --border-color: #ddd;
-            --chat-bubble-bg-self: #DCF8C6; /* Light Green */
-            --chat-bubble-bg-other: #FFFFFF; /* White */
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif; /* Or any preferred font */
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        #app-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 600px; /* Max width for larger screens */
-            margin: 0 auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            background-color: #fff;
-            flex-grow: 1;
-        }
-
-        /* --- Common UI Elements --- */
-        h1, h2 {
-            color: var(--primary-color);
-            text-align: center;
-            margin: 15px 0;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 1em;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .error-message {
-            color: #d32f2f; /* Red */
-            margin-top: -5px;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-            text-align: center;
-        }
-
-        .section {
-            padding: 20px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        /* --- Login/Auth Section --- */
-        #auth-section {
-            display: flex; /* Will be toggled */
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        #auth-form {
-            width: 100%;
-            max-width: 300px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        /* --- Chat Section --- */
-        #chat-section {
-            display: none; /* Will be toggled */
-            flex-direction: column;
-            flex-grow: 1;
-            padding: 10px;
-            position: relative;
-        }
-
-        #chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        #current-username {
-            font-weight: bold;
-        }
-
-        #message-display {
-            flex-grow: 1;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #fcfcfc;
-            display: flex;
-            flex-direction: column; /* Stack messages */
-        }
-
-        .message-bubble {
-            max-width: 70%;
-            padding: 8px 12px;
-            border-radius: 18px;
-            margin-bottom: 8px;
-            word-wrap: break-word;
-            font-size: 0.95em;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.08);
-        }
-
-        .message-self {
-            align-self: flex-end; /* Align to the right */
-            background-color: var(--chat-bubble-bg-self);
-            color: var(--text-color);
-            border-bottom-right-radius: 2px; /* Point to sender */
-        }
-
-        .message-other {
-            align-self: flex-start; /* Align to the left */
-            background-color: var(--chat-bubble-bg-other);
-            color: var(--text-color);
-            border-bottom-left-radius: 2px; /* Point to sender */
-        }
-
-        .message-sender {
-            font-size: 0.8em;
-            color: #666;
-            margin-bottom: 3px;
-        }
-
-        .message-timestamp {
-            font-size: 0.7em;
-            color: #888;
-            text-align: right;
-            margin-top: 5px;
-            display: block;
-        }
-
-
-        #message-input-area {
-            display: flex;
-            gap: 10px;
-            padding: 10px 0;
-            border-top: 1px solid var(--border-color);
-        }
-
-        #message-input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px; /* Rounded input */
-            font-size: 1em;
-        }
-
-        #send-button {
-            padding: 10px 20px;
-            border-radius: 20px;
-        }
-
-        /* --- Responsive Adjustments (for larger screens like PC) --- */
-        @media (min-width: 768px) {
-            body {
-                justify-content: center;
-                align-items: center;
-            }
-            #app-container {
-                border-radius: 8px;
-                height: 90vh; /* Make it fill most of the height on PC */
-            }
-            #auth-form {
-                padding: 30px;
-            }
-        }
-    </style>
+    <title>NexChat - Public Access</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for a modern look (optional, but good for "futuristic") -->
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app-container">
         <!-- Auth Section -->
         <section id="auth-section">
-            <h1>Welcome to Chat!</h1>
-            <div id="auth-form">
+            <div class="auth-card">
+                <h1>NexChat <span class="logo-subtitle">Public Access</span></h1>
                 <h2>Login</h2>
                 <input type="text" id="username-input" placeholder="Username" required>
                 <input type="password" id="password-input" placeholder="Password" required>
-                <button id="login-button">Login</button>
+                <button id="login-button" class="primary-button">Login</button>
                 <p id="login-error" class="error-message"></p>
             </div>
         </section>
 
         <!-- Chat Section -->
         <section id="chat-section">
-            <div id="chat-header">
-                <div>Chat with Admin</div>
-                <div id="current-username"></div>
-                <button id="logout-button">Logout</button>
-            </div>
+            <header id="chat-header">
+                <div class="header-left">
+                    <span class="chat-icon">💬</span>
+                    <span class="chat-title">Admin Chat</span>
+                </div>
+                <div class="header-right">
+                    <span id="current-username-display" class="user-info"></span>
+                    <button id="logout-button" class="secondary-button">Logout</button>
+                </div>
+            </header>
 
             <div id="message-display">
-                <!-- Messages will be appended here -->
+                <!-- Chat messages will be dynamically added here -->
+                <div class="chat-empty-state">
+                    <p>Start a conversation with the Admin!</p>
+                </div>
             </div>
 
             <div id="message-input-area">
+                <input type="file" id="media-input" accept="image/*,video/*,audio/*" style="display: none;">
+                <label for="media-input" class="media-upload-button primary-button">📎</label>
                 <input type="text" id="message-input" placeholder="Type your message..." aria-label="Type your message">
-                <button id="send-button">Send</button>
+                <button id="send-button" class="primary-button">Send</button>
             </div>
         </section>
     </div>
 
     <!-- Firebase SDK CDN imports -->
+    <!-- Using compat versions for simpler global access -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script> <!-- Optional -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script> <!-- NEW: For media sharing -->
 
-    <script type="module">
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "AIzaSyA9Hyb4nv6yZcyOqI_azRLB0v31jdO3YvU", // <--- REPLACE THIS WITH YOUR ACTUAL API KEY FROM FIREBASE CONSOLE!
-          authDomain: "red-head-7391.firebaseapp.com",
-          databaseURL: "https://red-head-7391-default-rtdb.firebaseio.com",
-          projectId: "red-head-7391",
-          storageBucket: "red-head-7391.firebasestorage.app",
-          messagingSenderId: "408168002586",
-          appId: "1:408168002586:web:f9920d13106cbe375b8da3",
-          measurementId: "G-N6QX49H4KN"
-        };
-
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const analytics = firebase.analytics(); // Analytics is optional
-
-        // Get service instances
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        // --- DOM Elements ---
-        const authSection = document.getElementById('auth-section');
-        const chatSection = document.getElementById('chat-section');
-        const usernameInput = document.getElementById('username-input');
-        const passwordInput = document.getElementById('password-input');
-        const loginButton = document.getElementById('login-button');
-        const loginError = document.getElementById('login-error');
-        const logoutButton = document.getElementById('logout-button');
-        const currentUsernameDisplay = document.getElementById('current-username');
-        const messageDisplay = document.getElementById('message-display');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-
-        let currentUser = null; // Store current Firebase User object
-        let currentUserName = ''; // Store the username from RTDB
-        let adminChatId = 'admin_chat_placeholder'; // IMPORTANT: This needs to be dynamically determined.
-                                                    // For now, it's a fixed placeholder.
-                                                    // In a real app, you might generate this based on user UID and admin UID.
-
-        // --- UI State Management ---
-        function showAuthSection() {
-            authSection.style.display = 'flex';
-            chatSection.style.display = 'none';
-        }
-
-        function showChatSection() {
-            authSection.style.display = 'none';
-            chatSection.style.display = 'flex';
-        }
-
-        // --- Firebase Authentication ---
-        async function loginUser() {
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value.trim();
-
-            if (!username || !password) {
-                loginError.textContent = "Please enter both username and password.";
-                return;
-            }
-
-            loginButton.disabled = true;
-            loginError.textContent = ''; // Clear previous errors
-
-            try {
-                const email = `${username}@yourdomain.com`; // Construct the dummy email
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                currentUser = userCredential.user;
-                console.log("User logged in successfully:", currentUser.uid);
-
-                // Fetch actual username and isAdmin status from Realtime Database
-                const userRef = database.ref(`users/${currentUser.uid}`);
-                userRef.once('value', (snapshot) => {
-                    const userData = snapshot.val();
-                    if (userData) {
-                        currentUserName = userData.username;
-                        currentUsernameDisplay.textContent = `Logged in as: ${currentUserName}`;
-                        console.log("Current user details:", userData.username, userData.isAdmin ? "(Admin)" : "(Public User)");
-                        // If admin, might show different UI or redirect to admin panel
-                        // For this demo, admin and public users use the same chat UI,
-                        // but a real admin would likely have a list of user chats.
-                        // For simplicity, we're assuming the admin is chatting with a "generic" public user chat.
-                        // In your actual admin panel, you'd iterate through 'chats' node.
-                    }
-                });
-
-                showChatSection();
-                setupChatListener(adminChatId); // Start listening to messages for the admin chat
-                usernameInput.value = '';
-                passwordInput.value = '';
-
-            } catch (error) {
-                console.error("Login failed:", error.message);
-                loginError.textContent = `Login failed: ${error.message}`;
-            } finally {
-                loginButton.disabled = false;
-            }
-        }
-
-        async function logoutUser() {
-            try {
-                await auth.signOut();
-                console.log("User logged out successfully.");
-                currentUsernameDisplay.textContent = '';
-                currentUser = null;
-                currentUserName = '';
-                showAuthSection();
-                messageDisplay.innerHTML = ''; // Clear messages on logout
-            } catch (error) {
-                console.error("Logout failed:", error.message);
-            }
-        }
-
-        // --- Firebase Realtime Database (Chat) ---
-        let unsubscribeChat = null; // To store the unsubscribe function for the chat listener
-
-        function setupChatListener(chatId) {
-            if (unsubscribeChat) {
-                unsubscribeChat(); // Unsubscribe previous listener if exists
-            }
-
-            const messagesRef = database.ref(`chats/${chatId}/messages`);
-
-            unsubscribeChat = messagesRef.on('value', (snapshot) => {
-                const messagesData = snapshot.val();
-                messageDisplay.innerHTML = ''; // Clear previous messages
-                const messagesList = [];
-
-                if (messagesData) {
-                    for (let id in messagesData) {
-                        messagesList.push({ id, ...messagesData[id] });
-                    }
-                    messagesList.sort((a, b) => a.timestamp - b.timestamp);
-                }
-
-                messagesList.forEach(msg => {
-                    const messageElement = document.createElement('div');
-                    messageElement.classList.add('message-bubble');
-
-                    const isSelf = currentUser && msg.senderId === currentUser.uid;
-                    messageElement.classList.add(isSelf ? 'message-self' : 'message-other');
-
-                    // Sender name - you'd likely fetch this from your 'users' node
-                    // For simplicity, we'll just show senderId or a fetched name
-                    const senderName = msg.senderId === currentUser.uid ? currentUserName : "Admin"; // Simplified for this 1-on-1 chat
-
-                    messageElement.innerHTML = `
-                        <div class="message-sender">${senderName}</div>
-                        <div>${msg.text}</div>
-                        <span class="message-timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</span>
-                    `;
-                    messageDisplay.appendChild(messageElement);
-                });
-
-                // Scroll to the bottom of the chat
-                messageDisplay.scrollTop = messageDisplay.scrollHeight;
-
-            }, (error) => {
-                console.error("Error fetching messages:", error);
-            });
-        }
-
-        async function sendMessage() {
-            const messageText = messageInput.value.trim();
-            if (!messageText || !currentUser) {
-                return; // Don't send empty messages or if not logged in
-            }
-
-            sendButton.disabled = true; // Disable to prevent double-sends
-
-            try {
-                const messagesRef = database.ref(`chats/${adminChatId}/messages`);
-                await messagesRef.push({
-                    senderId: currentUser.uid,
-                    text: messageText,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP // Use server timestamp
-                });
-                messageInput.value = ''; // Clear input field
-                console.log("Message sent!");
-            } catch (error) {
-                console.error("Error sending message:", error.message);
-                // Display an error to the user if needed
-            } finally {
-                sendButton.disabled = false;
-            }
-        }
-
-        // --- Event Listeners ---
-        loginButton.addEventListener('click', loginUser);
-        logoutButton.addEventListener('click', logoutUser);
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-
-        // --- Initial Auth State Check ---
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                console.log("User already logged in:", user.uid);
-
-                // Fetch current user's details from RTDB
-                const userRef = database.ref(`users/${user.uid}`);
-                const snapshot = await userRef.once('value');
-                const userData = snapshot.val();
-
-                if (userData) {
-                    currentUserName = userData.username;
-                    currentUsernameDisplay.textContent = `Logged in as: ${currentUserName}`;
-                    // Determine adminChatId here if it's dynamic
-                    // For example: `adminChatId = generateChatId(user.uid, admin_uid);`
-                    setupChatListener(adminChatId);
-                    showChatSection();
-                } else {
-                    // User exists in auth but not in RTDB 'users' node (shouldn't happen if created by admin)
-                    console.error("User profile not found in RTDB.");
-                    auth.signOut(); // Force logout
-                    showAuthSection();
-                }
-
-            } else {
-                console.log("No user logged in.");
-                showAuthSection();
-            }
-        });
-
-    </script>
+    <!-- Your custom JavaScript file -->
+    <script src="script.js" type="module"></script>
 </body>
 </html>
