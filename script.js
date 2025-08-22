@@ -5,7 +5,7 @@ const firebaseConfig = {
   authDomain: "red-head-7391.firebaseapp.com",
   databaseURL: "https://red-head-7391-default-rtdb.firebaseio.com",
   projectId: "red-head-7391",
-  storageBucket: "red-head-7391.firebasestorage.app", // NEW: For Firebase Storage
+  storageBucket: "red-head-7391.firebasestorage.app", // For Firebase Storage
   messagingSenderId: "408168002586",
   appId: "1:408168002586:web:f9920d13106cbe375b8da3",
   measurementId: "G-N6QX49H4KN" // Optional
@@ -17,7 +17,7 @@ const app = firebase.initializeApp(firebaseConfig);
 // Get service instances
 const auth = firebase.auth();
 const database = firebase.database();
-const storage = firebase.storage(); // NEW: For Firebase Storage
+const storage = firebase.storage(); // For Firebase Storage
 
 // --- DOM Elements ---
 const authSection = document.getElementById('auth-section');
@@ -89,7 +89,7 @@ async function loginUser() {
     loginButton.disabled = true;
 
     try {
-        const email = `${username.toLowerCase()}@yourchatapp.com`; // Consistent dummy email as per Cloud Function
+        const email = `${username.toLowerCase()}@yourchatapp.com`; // Consistent dummy email as per Cloud Function (even if manual)
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         currentUser = userCredential.user;
         console.log("User logged in successfully:", currentUser.uid);
@@ -146,4 +146,211 @@ async function loginUser() {
         loginButton.disabled = false;
     }
 }
-// ... (rest of the script.js code)
+
+async function logoutUser() {
+    try {
+        await auth.signOut();
+        console.log("User logged out successfully.");
+        currentUsernameDisplay.textContent = '';
+        currentUser = null;
+        currentUserName = '';
+        adminUid = null;
+        publicUserAdminChatId = null;
+        if (unsubscribeChat) {
+            unsubscribeChat(); // Unsubscribe from chat listener
+        }
+        showAuthSection();
+    } catch (error) {
+        console.error("Logout failed:", error.message);
+    }
+}
+
+// --- Firebase Realtime Database (Chat) ---
+let unsubscribeChat = null; // To store the unsubscribe function for the chat listener
+
+function setupChatListener(chatId) {
+    if (unsubscribeChat) {
+        unsubscribeChat(); // Unsubscribe previous listener if exists
+    }
+
+    const messagesRef = database.ref(`chats/${chatId}/messages`);
+
+    // Listen for messages in real-time
+    unsubscribeChat = messagesRef.on('value', async (snapshot) => {
+        const messagesData = snapshot.val();
+        messageDisplay.innerHTML = ''; // Clear previous messages
+        const messagesList = [];
+
+        if (messagesData) {
+            for (let id in messagesData) {
+                messagesList.push({ id, ...messagesData[id] });
+            }
+            messagesList.sort((a, b) => a.timestamp - b.timestamp);
+        }
+
+        if (messagesList.length === 0) {
+            messageDisplay.innerHTML = '<div class="chat-empty-state"><p>Start a conversation with the Admin!</p></div>';
+        } else {
+            for (const msg of messagesList) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message-bubble');
+
+                const isSelf = currentUser && msg.senderId === currentUser.uid;
+                messageElement.classList.add(isSelf ? 'message-self' : 'message-other');
+
+                const senderName = isSelf ? currentUserName : "Admin"; // Simplified for 1-on-1 chat
+
+                messageElement.innerHTML = `
+                    <span class="message-sender-name">${senderName}</span>
+                    <div class="message-content">${msg.text || ''}</div>
+                `;
+
+                // Handle media content if present
+                if (msg.mediaUrl && msg.mediaType) {
+                    messageElement.innerHTML += `<div class="message-media">${renderMedia(msg.mediaType, msg.mediaUrl)}</div>`;
+                }
+
+                messageElement.innerHTML += `<span class="message-timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</span>`;
+                
+                messageDisplay.appendChild(messageElement);
+            }
+        }
+
+        // Scroll to the bottom of the chat
+        messageDisplay.scrollTop = messageDisplay.scrollHeight;
+
+    }, (error) => {
+        console.error("Error fetching messages:", error);
+        messageDisplay.innerHTML = `<div class="chat-empty-state" style="color:var(--error-color);"><p>Error loading messages: ${error.message}</p></div>`;
+    });
+}
+
+// --- Sending Messages (Text & Media) ---
+async function sendMessage() {
+    const messageText = messageInput.value.trim();
+    const mediaFile = mediaInput.files[0];
+
+    if ((!messageText && !mediaFile) || !currentUser || !publicUserAdminChatId) {
+        // Don't send empty messages/files or if not logged in/chat not established
+        return;
+    }
+
+    sendButton.disabled = true;
+    mediaInput.disabled = true; // Disable media input during send
+    loginError.textContent = ''; // Use loginError for temporary feedback
+    loginError.style.color = 'gray';
+
+    try {
+        let messageData = {
+            senderId: currentUser.uid,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        if (messageText) {
+            messageData.text = messageText;
+        }
+
+        if (mediaFile) {
+            loginError.textContent = 'Uploading media...';
+            const mediaPath = `chat_media/${publicUserAdminChatId}/${currentUser.uid}/${Date.now()}_${mediaFile.name}`;
+            const mediaRef = storage.ref(mediaPath);
+            const uploadTask = mediaRef.put(mediaFile);
+
+            // You can add upload progress here if needed
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    loginError.textContent = `Upload: ${progress.toFixed(0)}%`;
+                },
+                (error) => {
+                    console.error("Media upload error:", error);
+                    throw new Error("Media upload failed.");
+                }
+            );
+
+            await uploadTask; // Wait for upload to complete
+            const mediaUrl = await mediaRef.getDownloadURL();
+
+            messageData.mediaUrl = mediaUrl;
+            messageData.mediaType = mediaFile.type;
+        }
+
+        const messagesRef = database.ref(`chats/${publicUserAdminChatId}/messages`);
+        await messagesRef.push(messageData);
+
+        messageInput.value = ''; // Clear text input
+        mediaInput.value = ''; // Clear file input
+        loginError.textContent = ''; // Clear media upload message
+
+        console.log("Message sent!");
+    } catch (error) {
+        console.error("Error sending message:", error.message);
+        loginError.textContent = `Error sending: ${error.message}`; // Display error
+        loginError.style.color = 'var(--error-color)';
+    } finally {
+        sendButton.disabled = false;
+        mediaInput.disabled = false;
+    }
+}
+
+
+// --- Event Listeners ---
+loginButton.addEventListener('click', loginUser);
+logoutButton.addEventListener('click', logoutUser);
+sendButton.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+mediaInput.addEventListener('change', () => {
+    if (mediaInput.files[0]) {
+        console.log("Media selected:", mediaInput.files[0].name, mediaInput.files[0].type);
+        loginError.textContent = `File selected: ${mediaInput.files[0].name}`;
+        loginError.style.color = 'gray';
+    } else {
+        loginError.textContent = '';
+    }
+});
+
+
+// --- Initial Auth State Check ---
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        currentUser = user;
+        console.log("User already logged in:", user.uid);
+
+        const userRef = database.ref(`users/${user.uid}`);
+        const snapshot = await userRef.once('value');
+        const userData = snapshot.val();
+
+        if (userData && !userData.isAdmin) {
+            currentUserName = userData.username;
+            currentUsernameDisplay.textContent = `${currentUserName}`;
+
+            const adminUserSnapshot = await database.ref('users').orderByChild('isAdmin').equalTo(true).limitToFirst(1).once('value');
+            const adminData = adminUserSnapshot.val();
+
+            if (adminData) {
+                adminUid = Object.keys(adminData)[0];
+                publicUserAdminChatId = generateChatId(currentUser.uid, adminUid);
+                console.log("Chat ID on load:", publicUserAdminChatId);
+                setupChatListener(publicUserAdminChatId);
+                showChatSection();
+            } else {
+                console.error("No admin user found during initial auth check.");
+                loginError.textContent = "No admin available to chat with.";
+                loginError.style.color = 'var(--error-color)';
+                auth.signOut();
+                showAuthSection();
+            }
+        } else {
+            console.error("Logged in user is an admin, or profile missing for public access.");
+            auth.signOut(); // Force logout if admin or not a public user
+            showAuthSection();
+        }
+    } else {
+        console.log("No user logged in.");
+        showAuthSection();
+    }
+});
