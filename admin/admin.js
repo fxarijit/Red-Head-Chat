@@ -18,6 +18,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
 const storage = firebase.storage(); // For Firebase Storage
+// REMOVED: const functions = firebase.functions(); // Cloud Functions is NOT used
 
 // --- DOM Elements ---
 const adminLoginSection = document.getElementById('admin-login-section');
@@ -31,12 +32,13 @@ const adminLogoutButton = document.getElementById('admin-logout-button');
 const publicUsersList = document.getElementById('public-users-list');
 const userSearchInput = document.getElementById('user-search-input'); // Search input
 const currentChattedUsername = document.getElementById('current-chatted-username');
-const adminMessageDisplay = document = document.getElementById('admin-message-display'); // DOM Element for displaying messages
+const adminMessageDisplay = document.getElementById('admin-message-display'); // DOM Element for displaying messages
 const adminMessageInput = document.getElementById('admin-message-input');
 const adminSendButton = document.getElementById('admin-send-button');
 const adminMediaInput = document.getElementById('admin-media-input'); // Admin media input
 
 // REMOVED: User Creation DOM Elements (newUsernameInput, newPasswordInput, createUserButton, createUserMessage)
+//         because Cloud Functions are not used for this.
 
 
 let adminCurrentUser = null;
@@ -260,7 +262,6 @@ function selectUserToChat(uid, username) {
     adminMessageDisplay.innerHTML = '<div class="chat-empty-state"><p>No messages yet with this user.</p></div>'; // Clear previous chat
     adminMessageInput.value = '';
     adminMediaInput.value = ''; // Clear any pending media file
-    // createUserMessage.textContent = ''; // Removed as createUserMessage is gone
 
     // Generate the chat ID consistently
     currentAdminChatId = generateChatId(adminCurrentUser.uid, selectedPublicUserUid);
@@ -335,7 +336,6 @@ async function sendAdminMessage() {
 
     adminSendButton.disabled = true;
     adminMediaInput.disabled = true; // Disable media input during send
-    // Use adminLoginError for temporary feedback about media upload
     adminLoginError.textContent = ''; // Clear existing error/feedback
     adminLoginError.style.color = 'gray'; // Reset color for feedback
 
@@ -395,7 +395,6 @@ async function sendAdminMessage() {
 // --- Event Listeners ---
 adminLoginButton.addEventListener('click', adminLogin);
 adminLogoutButton.addEventListener('click', adminLogout);
-// REMOVED: createUserButton.addEventListener('click', createPublicUser);
 userSearchInput.addEventListener('keyup', filterUsers); // Search input listener
 adminSendButton.addEventListener('click', sendAdminMessage);
 adminMessageInput.addEventListener('keypress', (e) => {
