@@ -152,6 +152,16 @@ input:focus, #admin-message-input:focus, #user-search-input:focus {
     text-align: center;
 }
 
+.info-message { /* NEW STYLE */
+    color: var(--accent-color);
+    font-size: 0.9em;
+    text-align: center;
+    margin-top: var(--spacing);
+    padding: 10px;
+    border: 1px dashed var(--accent-color);
+    border-radius: var(--border-radius);
+}
+
 .separator {
     border: 0;
     height: 1px;
@@ -197,25 +207,6 @@ input:focus, #admin-message-input:focus, #user-search-input:focus {
     background-color: var(--admin-sidebar-bg);
     padding: var(--spacing);
     border-bottom: 1px solid var(--input-border); /* Separator for mobile */
-}
-
-/* Create User Area */
-#admin-create-user-area {
-    text-align: center;
-    margin-bottom: var(--spacing);
-}
-#admin-create-user-area h2 {
-    font-size: 1.2em;
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-#admin-create-user-area input {
-    max-width: 250px;
-    margin-bottom: 8px;
-}
-#create-user-message {
-    margin-top: 10px;
-    font-size: 0.85em;
 }
 
 /* User Search */
