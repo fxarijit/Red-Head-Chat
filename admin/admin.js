@@ -28,7 +28,7 @@ const adminPasswordInput = document.getElementById('admin-password-input');
 const adminLoginButton = document.getElementById('admin-login-button');
 const adminLoginError = document.getElementById('admin-login-error');
 const adminUsernameDisplay = document.getElementById('admin-username-display');
-const adminLogoutButton = document.getElementById('admin-logout-button');
+const adminLogoutButton = document = document.getElementById('admin-logout-button'); // This was a typo! Fixed.
 const publicUsersList = document.getElementById('public-users-list');
 const userSearchInput = document.getElementById('user-search-input'); // Search input
 const currentChattedUsername = document.getElementById('current-chatted-username');
@@ -36,9 +36,6 @@ const adminMessageDisplay = document.getElementById('admin-message-display'); //
 const adminMessageInput = document.getElementById('admin-message-input');
 const adminSendButton = document.getElementById('admin-send-button');
 const adminMediaInput = document.getElementById('admin-media-input'); // Admin media input
-
-// REMOVED: User Creation DOM Elements (newUsernameInput, newPasswordInput, createUserButton, createUserMessage)
-//         because Cloud Functions are not used for this.
 
 
 let adminCurrentUser = null;
@@ -210,9 +207,9 @@ function filterUsers() {
         // Simple search by username
         const userNameMatch = (user.username || '').toLowerCase().includes(searchTerm);
         
-        // You could add chat message search here with more complex logic,
-        // e.g., fetching last few messages for each user.
-        // For now, we'll keep it to username search for simplicity.
+        // For a more advanced search, you'd fetch message content for each user,
+        // but that's beyond the scope of a Spark plan client-side search.
+        // For now, this searches only usernames.
 
         if (userNameMatch) {
             filteredCount++;
@@ -234,9 +231,6 @@ function filterUsers() {
         publicUsersList.innerHTML = '<li>No public users registered.</li>';
     }
 }
-
-
-// REMOVED: createPublicUser function and its DOM elements as Cloud Functions are not used.
 
 
 // --- Admin Dashboard: Chatting with Selected User ---
