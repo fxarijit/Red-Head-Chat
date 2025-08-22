@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Chat App</title>
+    <link rel="stylesheet" href="admin.css"> <!-- Link to admin-specific CSS -->
+</head>
+<body>
+    <div id="admin-app-container">
+        <header id="admin-header">
+            <h1>Admin Dashboard</h1>
+            <div id="admin-user-info">
+                Logged in as: <span id="admin-username-display"></span>
+                <button id="admin-logout-button">Logout</button>
+            </div>
+        </header>
+
+        <section id="admin-login-section">
+            <h2>Admin Login</h2>
+            <input type="text" id="admin-email-input" placeholder="Admin Email" required>
+            <input type="password" id="admin-password-input" placeholder="Password" required>
+            <button id="admin-login-button">Login</button>
+            <p id="admin-login-error" class="error-message"></p>
+        </section>
+
+        <section id="admin-dashboard-section" style="display: none;">
+            <div id="admin-users-list-area">
+                <h2>Public Users</h2>
+                <ul id="public-users-list">
+                    <!-- Public users will be listed here -->
+                    <li>No public users found.</li>
+                </ul>
+            </div>
+
+            <div id="admin-chat-area">
+                <h2>Chat with: <span id="current-chatted-username">None Selected</span></h2>
+                <div id="admin-message-display">
+                    <!-- Messages for the selected user will appear here -->
+                </div>
+                <div id="admin-message-input-area">
+                    <input type="text" id="admin-message-input" placeholder="Type message to user...">
+                    <button id="admin-send-button" disabled>Send</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Firebase SDK CDN imports (use compat for older API style) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="admin.js" type="module"></script> <!-- Link to admin-specific JS -->
+</body>
+</html>
