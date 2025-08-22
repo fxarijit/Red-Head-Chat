@@ -30,7 +30,6 @@
 
         <section id="admin-dashboard-section" style="display: none;">
             <div id="admin-users-list-area">
-                <!-- REMOVED: Create New Public User Section -->
                 <h2>Public Users</h2>
                 <div class="search-container">
                     <input type="text" id="user-search-input" placeholder="Search users by name or chat..." aria-label="Search users">
@@ -60,12 +59,12 @@
         </section>
     </div>
 
-    <!-- Firebase SDK CDN imports (use compat for older API style) -->
+    <!-- Firebase SDK CDN imports -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script> <!-- Optional -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script> <!-- NEW: For media sharing -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
     
     <script src="admin.js" type="module"></script> <!-- Link to admin-specific JS -->
 </body>
